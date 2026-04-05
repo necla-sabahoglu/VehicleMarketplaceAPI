@@ -55,37 +55,50 @@ http://localhost:5000/swagger
 ---
 
 ## 📷 Architecture Diagram
-                ┌───────────────┐
-                │   Client      │
-                │ (Postman/UI)  │
-                └───────┬───────┘
-                        │ HTTP Request
-                        ▼
-                ┌───────────────┐
-                │   API Layer   │
-                │ Controllers   │
-                └───────┬───────┘
-                        │
-                        ▼
-                ┌───────────────┐
-                │ Application   │
-                │ Services      │
-                └───────┬───────┘
-                        │
-        ┌───────────────┼───────────────┐
-        ▼               ▼               ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│ Redis Cache  │ │ Repository   │ │ RabbitMQ     │
-│ (Read Fast)  │ │ (DB Access)  │ │ (Events)     │
-└───────┬──────┘ └───────┬──────┘ └───────┬──────┘
-        │                │                │
-        ▼                ▼                ▼
-   (Cache Hit)     ┌──────────────┐   ┌──────────────┐
-                   │   MSSQL DB   │   │ Consumer     │
-                   │              │   │ Background   │
-                   └──────────────┘   └──────────────┘
+
+## 📷 Architecture Diagram
+
+```mermaid
+flowchart LR
+
+%% Client Layer
+Client[Client (Postman / UI)]
+
+%% API Layer
+API[API Layer\nControllers]
+
+%% Application Layer
+App[Application Layer\nServices / Use Cases]
+
+%% Infrastructure Layer
+Repo[Repository Layer]
+Cache[Redis Cache]
+MQ[RabbitMQ]
+
+%% Data Layer
+DB[(MSSQL Database)]
+Consumer[Background Consumers / Jobs]
+
+%% Flow
+Client -->|HTTP Request| API
+API --> App
+
+App -->|Read (Cache First)| Cache
+Cache -->|Cache Hit| App
+App -->|Cache Miss| Repo
+
+Repo --> DB
+
+App -->|Publish Events| MQ
+MQ --> Consumer
+Consumer --> DB
   	
 ---
 
 ## 💡 Author
 Necla Sabahoglu
+
+
+---
+
+If you want, I can :contentReference[oaicite:0]{index=0} (e.g. adding badges, API examples, metrics, screenshots, or “why this architecture” section).
