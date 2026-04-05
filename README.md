@@ -57,20 +57,28 @@ http://localhost:5000/swagger
 ## 📷 Architecture Diagram
 
 ```mermaid
-
 flowchart LR
 
+%% Client Layer
 Client["Client (Postman / UI)"]
+
+%% API Layer
 API["API Layer - Controllers"]
+
+%% Application Layer
 App["Application Layer - Services / Use Cases"]
 
-Cache["Redis Cache"]
+%% Infrastructure Layer
 Repo["Repository Layer"]
+Cache["Redis Cache"]
 MQ["RabbitMQ"]
 
+%% Data Layer
 DB[("MSSQL Database")]
 Consumer["Background Jobs / Consumers"]
+Done(("End"))
 
+%% Flow
 Client -->|HTTP Request| API
 API --> App
 
@@ -83,8 +91,7 @@ Repo --> DB
 App -->|Publish Event| MQ
 MQ --> Consumer
 Consumer --> DB
-
-```mermaid
+DB --> Done
 
 ---
 
