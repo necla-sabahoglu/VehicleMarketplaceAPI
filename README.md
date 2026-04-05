@@ -56,7 +56,7 @@ http://localhost:5000/swagger
 
 ## 📷 Architecture Diagram
 
-```mermaid
+**```mermaid**
 
 flowchart LR
 
@@ -83,6 +83,8 @@ Repo --> DB
 App -->|Publish Event| MQ
 MQ --> Consumer
 Consumer --> DB
+
+```mermaid
 
 ---
 
