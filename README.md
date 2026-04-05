@@ -56,49 +56,35 @@ http://localhost:5000/swagger
 
 ## 📷 Architecture Diagram
 
-## 📷 Architecture Diagram
-
 ```mermaid
+
 flowchart LR
 
-%% Client Layer
-Client[Client (Postman / UI)]
+Client["Client (Postman / UI)"]
+API["API Layer - Controllers"]
+App["Application Layer - Services / Use Cases"]
 
-%% API Layer
-API[API Layer\nControllers]
+Cache["Redis Cache"]
+Repo["Repository Layer"]
+MQ["RabbitMQ"]
 
-%% Application Layer
-App[Application Layer\nServices / Use Cases]
+DB[("MSSQL Database")]
+Consumer["Background Jobs / Consumers"]
 
-%% Infrastructure Layer
-Repo[Repository Layer]
-Cache[Redis Cache]
-MQ[RabbitMQ]
-
-%% Data Layer
-DB[(MSSQL Database)]
-Consumer[Background Consumers / Jobs]
-
-%% Flow
 Client -->|HTTP Request| API
 API --> App
 
-App -->|Read (Cache First)| Cache
-Cache -->|Cache Hit| App
-App -->|Cache Miss| Repo
+App -->|Cache First| Cache
+Cache -->|Hit| App
+App -->|Miss| Repo
 
 Repo --> DB
 
-App -->|Publish Events| MQ
+App -->|Publish Event| MQ
 MQ --> Consumer
 Consumer --> DB
-  	
+
 ---
 
 ## 💡 Author
-Necla Sabahoglu
-
-
----
-
-If you want, I can :contentReference[oaicite:0]{index=0} (e.g. adding badges, API examples, metrics, screenshots, or “why this architecture” section).
+Necla Sabahoğlu
